@@ -284,6 +284,10 @@ public class BundleDownloader {
     // Check for server errors. If the server error has the expected form, fail with more info.
     if (statusCode != 200) {
       String bodyString = body.readUtf8();
+      
+      // NOTE(expo): Remove JSON-encoded ANSI color codes from the string
+      bodyString = bodyString.replaceAll("\\\\u001b\\[[\\d;]*m", "");
+
       DebugServerException debugServerException = DebugServerException.parse(bodyString);
       if (debugServerException != null) {
         callback.onFailure(debugServerException);
